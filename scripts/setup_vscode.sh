@@ -15,7 +15,7 @@ setup_vscode_root() {
     # Criar o script no /usr/local/bin/vscode.sh
     sudo tee /usr/local/bin/vscode.sh > /dev/null <<EOF
 #!/bin/bash
-DONT_PROMPT_WSL_INSTALL=1 code --no-sandbox --user-data-dir="~/.vscode-root" "\$@"
+DONT_PROMPT_WSL_INSTALL=1 code --no-sandbox --user-data-dir="/root/.vscode-root" "\$@"
 EOF
 
     # Tornar o script executável
@@ -26,6 +26,9 @@ EOF
         echo "alias code='sudo vscode.sh'" >> ~/.bashrc
         echo "Alias adicionado ao .bashrc. Use 'source ~/.bashrc' para recarregar."
     fi
+
+    # Aplicar as alterações no .bashrc imediatamente
+    source ~/.bashrc
 }
 
 # Execução principal
