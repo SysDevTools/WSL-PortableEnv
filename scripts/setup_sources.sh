@@ -1,37 +1,78 @@
 #!/bin/bash
 
-# Função para adicionar um repositório com chave GPG
-add_repo() {
-    echo "Adicionando chave GPG e repositório: $1"
-    curl -fsSL "$2" | sudo tee /usr/share/keyrings/"$3" >/dev/null
-    echo "deb [signed-by=/usr/share/keyrings/$3] $4 $5 $6" | sudo tee /etc/apt/sources.list.d/"$7".list >/dev/null
+# Função para baixar chaves e colocá-las no diretório correto
+add_gpg_key() {
+    local url=$1
+    local keyring=$2
+
+    curl -fsSL "$url" | gpg --dearmor | sudo tee "$keyring" > /dev/null
 }
 
-# Atualizando a lista de pacotes e removendo travas do apt caso existam
-sudo rm /var/lib/dpkg/lock-frontend
-sudo rm /var/cache/apt/archives/lock
-sudo apt update
+# Adicionar chave GPG do Node.js
+add_gpg_key "https://deb.nodesource.com/gpgkey/nodesource.gpg.key" "/usr/share/keyrings/nodesource.gpg"
 
+# Adicionar chave GPG do Docker
+add_gpg_key "https://download.docker.com/linux/ubuntu/gpg" "/usr/share/keyrings/docker.gpg"
+
+# Adicionar chave GPG do Yarn
+add_gpg_key "https://dl.yarnpkg.com/debian/pubkey.gpg" "/usr/share/keyrings/yarn.gpg"
+
+# Adicionar chave GPG do Visual Studio Code
+add_gpg_key "https://packages.microsoft.com/keys/microsoft.asc" "/usr/share/keyrings/vscode.gpg"
+
+# Adicionar chave GPG do Google Chrome
+add_gpg_key "https://dl.google.com/linux/linux_signing_key.pub" "/usr/share/keyrings/google.gpg"
+
+# Adicionar repositórios
 echo "Adicionando fontes de repositórios..."
 
-# Node.js (Fonte)
-add_repo "Node.js" "https://deb.nodesource.com/gpgkey/nodesource.gpg.key" "nodesource.gpg" "https://deb.nodesource.com/node_14.x" "focal" "main" "nodesource"
+# Node.js (usando o codinome 'noble')
+cat <<EOF | sudo tee /etc/apt/sources.list.d/nodesource.sources
+Types: deb
+URIs: https://deb.nodesource.com/node_14.x
+Suites: noble
+Components: main
+Signed-By: /usr/share/keyrings/nodesource.gpg
+EOF
 
-# Docker (Fonte)
-add_repo "Docker" "https://download.docker.com/linux/ubuntu/gpg" "docker.gpg" "https://download.docker.com/linux/ubuntu" "focal" "stable" "docker"
+# Docker (usando o codinome 'noble')
+cat <<EOF | sudo tee /etc/apt/sources.list.d/docker.sources
+Types: deb
+URIs: https://download.docker.com/linux/ubuntu
+Suites: noble
+Components: stable
+Signed-By: /usr/share/keyrings/docker.gpg
+EOF
 
-# Yarn (Fonte)
-add_repo "Yarn" "https://dl.yarnpkg.com/debian/pubkey.gpg" "yarn.gpg" "https://dl.yarnpkg.com/debian/" "stable" "main" "yarn"
+# Yarn
+cat <<EOF | sudo tee /etc/apt/sources.list.d/yarn.sources
+Types: deb
+URIs: https://dl.yarnpkg.com/debian/
+Suites: stable
+Components: main
+Signed-By: /usr/share/keyrings/yarn.gpg
+EOF
 
-# Visual Studio Code (Fonte)
-add_repo "Visual Studio Code" "https://packages.microsoft.com/keys/microsoft.asc" "vscode.gpg" "https://packages.microsoft.com/repos/vscode" "stable" "main" "vscode"
+# Visual Studio Code
+cat <<EOF | sudo tee /etc/apt/sources.list.d/vscode.sources
+Types: deb
+URIs: https://packages.microsoft.com/repos/code
+Suites: stable
+Components: main
+Signed-By: /usr/share/keyrings/vscode.gpg
+EOF
 
-# Google Chrome (Fonte)
-add_repo "Google Chrome" "https://dl.google.com/linux/linux_signing_key.pub" "google.gpg" "http://dl.google.com/linux/chrome/deb/" "stable" "main" "google-chrome"
+# Google Chrome
+cat <<EOF | sudo tee /etc/apt/sources.list.d/google-chrome.sources
+Types: deb
+URIs: http://dl.google.com/linux/chrome/deb/
+Suites: stable
+Components: main
+Signed-By: /usr/share/keyrings/google.gpg
+EOF
 
-# Atualizar a lista de pacotes
+# Atualizar lista de pacotes
 echo "Atualizando lista de pacotes..."
 sudo apt update
 
-# Repositórios configurados com sucesso
 echo "Repositórios configurados e lista de pacotes atualizada com sucesso!"
