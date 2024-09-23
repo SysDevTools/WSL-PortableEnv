@@ -1,0 +1,26 @@
+# Repositórios principais do Ubuntu 24.04
+deb http://archive.ubuntu.com/ubuntu focal main restricted universe multiverse
+deb http://archive.ubuntu.com/ubuntu focal-updates main restricted universe multiverse
+deb http://archive.ubuntu.com/ubuntu focal-backports main restricted universe multiverse
+deb http://security.ubuntu.com/ubuntu focal-security main restricted universe multiverse
+
+# Node.js (18.x LTS)
+deb https://deb.nodesource.com/node_18.x focal main
+
+# Yarn
+deb https://dl.yarnpkg.com/debian/ stable main
+
+# Docker
+deb [arch=amd64] https://download.docker.com/linux/ubuntu focal stable
+
+# Visual Studio Code
+deb [arch=amd64] https://packages.microsoft.com/repos/vscode stable main
+
+# Google Chrome
+deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main
+
+# Git
+deb http://ppa.launchpad.net/git-core/ppa/ubuntu focal main
+
+# PostgreSQL
+deb http://apt.postgresql.org/pub/repos/apt focal-pgdg main
