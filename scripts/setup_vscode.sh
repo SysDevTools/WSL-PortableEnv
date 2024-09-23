@@ -8,31 +8,29 @@ install_vscode() {
     sudo apt update && sudo apt install code -y
 }
 
-# Função para configurar o script para rodar o VSCode como root
-setup_vscode_root() {
-    echo "Configurando o script para rodar o VSCode como root..."
+# Verificar se a variável já está no .bashrc
+if ! grep -q "DONT_PROMPT_WSL_INSTALL=1" ~/.bashrc; then
+  echo "Adicionando variável DONT_PROMPT_WSL_INSTALL ao .bashrc"
+  echo 'export DONT_PROMPT_WSL_INSTALL=1' >> ~/.bashrc
+  echo "Variável adicionada com sucesso!"
+else
+  echo "Variável DONT_PROMPT_WSL_INSTALL já está configurada."
+fi
 
-    # Criar o script no /usr/local/bin/vscode.sh
-    sudo tee /usr/local/bin/vscode.sh > /dev/null <<EOF
-#!/bin/bash
-DONT_PROMPT_WSL_INSTALL=1 code --no-sandbox --user-data-dir="/root/.vscode-root" "\$@"
-EOF
+# Verificar se o alias já está no .bashrc
+if ! grep -q "alias code" ~/.bashrc; then
+  echo "Adicionando alias para o VSCode no .bashrc"
+  echo 'alias code="code --no-sandbox --user-data-dir=~/.vscode"' >> ~/.bashrc
+  echo "Alias adicionado com sucesso!"
+else
+  echo "Alias 'code' já está configurado."
+fi
 
-    # Tornar o script executável
-    sudo chmod +x /usr/local/bin/vscode.sh
+# Recarregar o .bashrc para aplicar as mudanças
+echo "Recarregando o .bashrc"
+source ~/.bashrc
 
-    # Adicionar um alias ao bashrc para facilitar a execução
-    if ! grep -q "alias code='sudo vscode.sh'" ~/.bashrc; then
-        echo "alias code='sudo vscode.sh'" >> ~/.bashrc
-        echo "Alias adicionado ao .bashrc. Use 'source ~/.bashrc' para recarregar."
-    fi
-
-    # Aplicar as alterações no .bashrc imediatamente
-    source ~/.bashrc
-}
-
-# Execução principal
+# Executar a instalação do VSCode
 install_vscode
-setup_vscode_root
 
-echo "Configuração completa. Use 'code .' para abrir o VSCode com o script configurado."
+echo "Script concluído. Visual Studio Code instalado e configurado. Agora você pode usar 'code .' sem prompts."
