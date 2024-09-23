@@ -26,20 +26,20 @@ add_gpg_key "https://dl.google.com/linux/linux_signing_key.pub" "/usr/share/keyr
 # Adicionar repositórios
 echo "Adicionando fontes de repositórios..."
 
-# Node.js (usando o codinome 'noble')
+# Node.js (usando o codinome 'jammy')
 cat <<EOF | sudo tee /etc/apt/sources.list.d/nodesource.sources
 Types: deb
 URIs: https://deb.nodesource.com/node_14.x
-Suites: noble
+Suites: jammy
 Components: main
 Signed-By: /usr/share/keyrings/nodesource.gpg
 EOF
 
-# Docker (usando o codinome 'noble')
+# Docker (usando o codinome 'jammy')
 cat <<EOF | sudo tee /etc/apt/sources.list.d/docker.sources
 Types: deb
 URIs: https://download.docker.com/linux/ubuntu
-Suites: noble
+Suites: jammy
 Components: stable
 Signed-By: /usr/share/keyrings/docker.gpg
 EOF
